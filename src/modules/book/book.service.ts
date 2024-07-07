@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ConflictException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, InternalServerErrorException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, QueryFailedError } from 'typeorm';
 import { BookRepository } from './book.repository';
@@ -8,6 +8,7 @@ import { UpdateBookDto } from './dto/update-book.dto';
 
 @Injectable()
 export class BookService {
+    private logger = new Logger(BookService.name);
     constructor(
         @InjectRepository(BookRepository)
         private readonly bookRepository: BookRepository,
@@ -18,6 +19,7 @@ export class BookService {
             const book = this.bookRepository.create(createBookDto);
             return await this.bookRepository.save(book);
         } catch (error) {
+            this.logger.error(error)
             if (error instanceof QueryFailedError) {
                 if (error.message.includes('duplicate key value violates unique constraint')) {
                     throw new ConflictException('Book with this code already exists');
