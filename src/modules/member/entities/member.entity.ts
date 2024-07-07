@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Rent } from 'src/modules/rent/entities/rent.entity';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 
 @Entity()
 export class Member {
@@ -16,4 +17,7 @@ export class Member {
 
     @UpdateDateColumn()
     updatedAt: Date;
+
+    @OneToMany(() => Rent, rent => rent.member)
+    rents: Rent[];
 }

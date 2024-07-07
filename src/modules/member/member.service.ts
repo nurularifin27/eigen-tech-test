@@ -10,13 +10,13 @@ import { UpdateMemberDto } from './dto/update-member.dto';
 export class MemberService {
     constructor(
         @InjectRepository(MemberRepository)
-        private readonly bookRepository: MemberRepository,
+        private readonly memberRepository: MemberRepository,
     ) {}
 
     async create(createMemberDto: CreateMemberDto): Promise<Member> {
         try {
-            const book = this.bookRepository.create(createMemberDto);
-            return await this.bookRepository.save(book);
+            const book = this.memberRepository.create(createMemberDto);
+            return await this.memberRepository.save(book);
         } catch (error) {
             if (error instanceof QueryFailedError) {
                 if (error.message.includes('duplicate key value violates unique constraint')) {
@@ -31,11 +31,11 @@ export class MemberService {
     }
 
     async findAll(): Promise<Member[]> {
-        return await this.bookRepository.find();
+        return await this.memberRepository.find();
     }
 
     async findOne(id: number): Promise<Member> {
-        const book = await this.bookRepository.findOneBy({ id });
+        const book = await this.memberRepository.findOneBy({ id });
         if (!book) {
             throw new NotFoundException(`Member with ID ${id} not found`);
         }
@@ -43,8 +43,8 @@ export class MemberService {
     }
 
     async update(id: number, updateMemberDto: UpdateMemberDto): Promise<Member> {
-        await this.bookRepository.update(id, updateMemberDto);
-        const updatedMember = await this.bookRepository.findOneBy({ id });
+        await this.memberRepository.update(id, updateMemberDto);
+        const updatedMember = await this.memberRepository.findOneBy({ id });
         if (!updatedMember) {
             throw new NotFoundException(`Member with ID ${id} not found`);
         }
@@ -52,7 +52,7 @@ export class MemberService {
     }
 
     async remove(id: number): Promise<void> {
-        const result = await this.bookRepository.delete(id);
+        const result = await this.memberRepository.delete(id);
         if (result.affected === 0) {
             throw new NotFoundException(`Member with ID ${id} not found`);
         }
