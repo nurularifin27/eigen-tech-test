@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { RentRepository } from './rent.repository';
 import { MemberRepository } from '../member/member.repository';
 import { BookRepository } from '../book/book.repository';
-import { generateRentCode } from 'src/utils/code-generator.util';
+import { generateRentCode } from 'src/common/utils/code-generator.util';
 
 @Injectable()
 export class RentService {
@@ -102,6 +102,17 @@ export class RentService {
   }
 
   private async checkBookAvailability(book: any, member: any) {
+    const countRentBook = await this.rentRepository.count({
+      where: {
+        status: 'borrowed',
+        book: { id : book.id }
+      }
+    })
+
+    if (book.stock <= countRentBook){
+      throw new BadRequestException(`Book with code ${book.code} is not available`);
+    }
+
     const rentByOther = await this.rentRepository.findOneRentForCheckBookBorrowedByOtherMember(book.id, member.id);
     if (rentByOther) {
       throw new BadRequestException(`Book with code ${book.code} is already borrowed by another member`);
