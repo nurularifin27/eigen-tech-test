@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { RentRepository } from './rent.repository';
 import { MemberRepository } from '../member/member.repository';
 import { BookRepository } from '../book/book.repository';
-import { generateRentCode } from 'src/utils/code-generator.util';
+import { generateRentCode } from 'src/common/utils/code-generator.util';
 
 @Injectable()
 export class RentService {
